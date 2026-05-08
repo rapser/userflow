@@ -52,6 +52,13 @@ struct UsersListCoordinatorHostView: View {
                 }
             }
         }
+        .onChange(of: coordinator.detailLocalId) { detailId in
+            if detailId == nil {
+                AppForegroundTask.scheduleSafe("UsersListCoordinatorHostView.onChangeDetailDismissed") {
+                    await viewModel.reloadFromCache()
+                }
+            }
+        }
     }
 
     @ViewBuilder
