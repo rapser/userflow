@@ -35,6 +35,9 @@ protocol UserRepository: AnyObject {
 
     /// Snapshot persistido (**`MT-08`**): falla si no existe la fila o está **`isDeleted`**.
     func userDetailSnapshot(localId: String) throws -> UserDetailSnapshot
+
+    /// **`MT-11`**: **`DELETE /users/:id`** cuando **`apiId > 0`**; siempre marca **`isDeleted`** en Realm (solo local si **`apiId == 0`**).
+    func deleteUser(localId: String) async throws
 }
 
 @MainActor
@@ -114,6 +117,24 @@ final class DefaultUserRepository: UserRepository {
             throw UserRepositoryError.userNotFound(localId: localId)
         }
         return UserDetailSnapshot(realmObject: obj)
+    }
+
+    func deleteUser(localId: String) async throws {
+        let realm = try openRealm()
+        guard let row = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !row.isDeleted else {
+            throw UserRepositoryError.userNotFound(localId: localId)
+        }
+
+        let remoteId = row.apiId
+        if remoteId > 0 {
+            try await remote.deleteUser(id: remoteId)
+        }
+
+        try realm.write {
+            if let inner = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !inner.isDeleted {
+                inner.isDeleted = true
+            }
+        }
     }
 
     private func setOptionalEdit(localId: String, apply: (UserObject) -> Void) throws {

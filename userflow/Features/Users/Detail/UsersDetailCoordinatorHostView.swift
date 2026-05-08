@@ -6,12 +6,15 @@
 import SwiftUI
 import UIKit
 
-/// Detalle (**`MT-08`**): todos los campos del snapshot, avatar recurso por defecto, edición nombre/email en Realm (**`UserRepository.setLocalDisplayEdits`**).
+/// Detalle (**`MT-08`** + **`MT-11`**): campos, edición nombre/email, borrado con DELETE simulado + **`isDeleted`**.
 struct UsersDetailCoordinatorHostView: View {
     @StateObject private var viewModel: UsersDetailViewModel
+    @State private var showDeleteConfirmation = false
 
-    init(localUserId: String, repository: UserRepository) {
-        _viewModel = StateObject(wrappedValue: UsersDetailViewModel(localId: localUserId, repository: repository))
+    init(localUserId: String, repository: UserRepository, onDeleted: @escaping () -> Void) {
+        _viewModel = StateObject(
+            wrappedValue: UsersDetailViewModel(localId: localUserId, repository: repository, onDeleteSuccess: onDeleted)
+        )
     }
 
     var body: some View {
@@ -33,23 +36,51 @@ struct UsersDetailCoordinatorHostView: View {
         .navigationTitle(String(localized: String.LocalizationValue("users.detail.navigationTitle")))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if !viewModel.isEditing, viewModel.snapshot != nil {
+                    Button(role: .destructive) {
+                        showDeleteConfirmation = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .accessibilityLabel(String(localized: String.LocalizationValue("users.detail.deleteA11y")))
+                    .disabled(viewModel.isDeletingUser)
+                }
+            }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if viewModel.isEditing {
                     Button(String(localized: String.LocalizationValue("button.cancel"))) {
                         viewModel.cancelEditing()
                     }
+                    .disabled(viewModel.isDeletingUser)
                     Button {
                         viewModel.saveEdits()
                     } label: {
                         Text(String(localized: String.LocalizationValue("users.detail.save")))
                             .font(.body.weight(.semibold))
                     }
+                    .disabled(viewModel.isDeletingUser)
                 } else {
                     Button(String(localized: String.LocalizationValue("users.detail.edit"))) {
                         viewModel.beginEditing()
                     }
-                    .disabled(viewModel.snapshot == nil)
+                    .disabled(viewModel.snapshot == nil || viewModel.isDeletingUser)
                 }
+            }
+        }
+        .alert(String(localized: String.LocalizationValue("users.detail.deleteAlertTitle")), isPresented: $showDeleteConfirmation) {
+            Button(String(localized: String.LocalizationValue("button.cancel")), role: .cancel) {}
+            Button(String(localized: String.LocalizationValue("users.detail.delete")), role: .destructive) {
+                Task { await viewModel.deleteUserConfirmed() }
+            }
+        } message: {
+            Text(String(localized: String.LocalizationValue("users.detail.deleteAlertMessage")))
+        }
+        .overlay {
+            if viewModel.isDeletingUser {
+                Color.black.opacity(0.12).ignoresSafeArea()
+                ProgressView()
+                    .progressViewStyle(.circular)
             }
         }
         .task {
@@ -60,6 +91,25 @@ struct UsersDetailCoordinatorHostView: View {
     private func detailScrollContent(snapshot: UserDetailSnapshot) -> some View {
         ScrollView {
             VStack(spacing: 16) {
+                if let banner = viewModel.deleteErrorMessage {
+                    HStack(alignment: .top, spacing: 10) {
+                        Text(banner)
+                            .font(.footnote)
+                            .foregroundColor(.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Button(String(localized: String.LocalizationValue("button.ok"))) {
+                            viewModel.clearDeleteError()
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundColor(.accentColor)
+                    }
+                    .padding(12)
+                    .background(Color(UIColor.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .shadow(color: Color.black.opacity(0.06), radius: 3, x: 0, y: 2)
+                    .padding(.horizontal, 16)
+                }
+
                 if let banner = viewModel.saveErrorMessage {
                     HStack(alignment: .top, spacing: 10) {
                         Text(banner)

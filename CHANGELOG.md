@@ -8,7 +8,23 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 10 — MT-10 Create user form _(latest entry)_
+### Build 11 — MT-11 Delete user (logical + simulated API) _(latest entry)_
+
+**Binary build:** `11`
+
+#### Added
+
+- **`UserRepository.deleteUser(localId:)`** (**async**): **`DELETE /users/:id`** cuando **`apiId > 0`** (**`UsersRemoteServicing`**); **`isDeleted`** en Realm; filas **`apiId == 0`** solo marcan tombstone.
+- **Detalle**: botón **Eliminar**, confirmación, overlay de guardado y banner de fallo red; **`onDeleted`** cierra navegación y **lista recarga** desde Realm (**`reloadFromCache`**).
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`11`** (Debug/Release).
+- **Localizable** `users.detail.delete*`.
+
+---
+
+### Build 10 — MT-10 Create user form
 
 **Binary build:** `10`
 

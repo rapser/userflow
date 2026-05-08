@@ -460,6 +460,44 @@
         }
       }
     },
+    "users.detail.delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Eliminar" } }
+      }
+    },
+    "users.detail.deleteA11y" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete user from this list" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Eliminar usuario de esta lista" } }
+      }
+    },
+    "users.detail.deleteAlertMessage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This contact disappears from your list here. Accounts tied to JSONPlaceholder also send a simulated DELETE first."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El contacto deja de aparecer aquí en tu lista. Para cuentas de JSONPlaceholder se envía primero un DELETE simulado."
+          }
+        }
+      }
+    },
+    "users.detail.deleteAlertTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remove this user?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Quitar este usuario?" } }
+      }
+    },
     "users.detail.edit" : {
       "extractionState" : "manual",
       "localizations" : {
