@@ -6,7 +6,25 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 2 — MT-02 Foundations _(latest entry)_
+### Build 3 — MT-03 Networking _(latest entry)_
+
+**Binary build:** `3`
+
+#### Added
+
+- **`UserDTO`** (+ `AddressDTO`, `GeoDTO`, `CompanyDTO`) mapping JSONPlaceholder `GET /users` (incl. nested `address.city` for UI later).
+- **`JSONPlaceholderConfiguration`** base URL and `/users` helpers.
+- **`NetworkingError`** (`invalidHTTPStatus`, `decoding`, `transport`) with `asAppError()` bridge to `AppError`.
+- **`UsersRemoteServicing`** protocol and **`JSONPlaceholderUsersClient`**: `fetchUsers()` and `deleteUser(id:)` via **Alamofire** `async`/`await` (`serializingDecodable` / `serializingData`), `200..<300` validation.
+- **`nonisolated` `Decodable`** on DTO extensions for compatibility with **`Sendable`** + default **MainActor** isolation in the target.
+
+#### Changed
+
+- `CURRENT_PROJECT_VERSION` → **`3`** (Debug/Release).
+
+---
+
+### Build 2 — MT-02 Foundations
 
 **Binary build:** `2`
 
