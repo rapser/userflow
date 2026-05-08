@@ -120,6 +120,57 @@
         }
       }
     },
+    "validation.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This field can’t be empty."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este campo no puede estar vacío."
+          }
+        }
+      }
+    },
+    "validation.emailInvalid" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That doesn’t look like a valid email address."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esa dirección no parece un correo válido."
+          }
+        }
+      }
+    },
+    "validation.phoneInvalid" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use a phone number with 7 to 22 digits (you can include spaces or hyphens)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa un teléfono con 7 a 22 dígitos (puedes usar espacios o guiones)."
+          }
+        }
+      }
+    },
     "users.coordinator.accessibility.addUser" : {
       "extractionState" : "manual",
       "localizations" : {
