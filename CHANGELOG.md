@@ -6,7 +6,25 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 3 — MT-03 Networking _(latest entry)_
+### Build 4 — MT-04 Realm schemas _(latest entry)_
+
+**Binary build:** `4`
+
+#### Added
+
+- **`UserObject`** (`RealmSwift`): PK `localId`, indexed **`apiId`**, **`isDeleted`** (logical delete tombstone), `isLocallyCreated`, remote snapshot fields (name/username/email/phone/website/address/geo/company) and optional **`editedName` / `editedEmail`** for local overrides (**`MT-08`**).
+- **`UserPrimaryKey`**: deterministic `remote-{apiId}` vs UUID for local-only rows (**`MT-05`** upserts).
+- **`UserObject` + `UserDTO`**: `applyRemoteSnapshot` / convenience init inside write transactions (**`MT-05`** merge).
+- **`RealmBootstrap.configureDefault()`**: **`schemaVersion: 1`** with migration scaffold (fresh install **`MT-04`**).
+
+#### Changed
+
+- App launch calls **`RealmBootstrap.configureDefault()`** before touching the default Realm file URL.
+- `CURRENT_PROJECT_VERSION` → **`4`** (Debug/Release).
+
+---
+
+### Build 3 — MT-03 Networking
 
 **Binary build:** `3`
 

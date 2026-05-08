@@ -12,7 +12,9 @@ import SwiftUI
 @main
 struct userflowApp: App {
     init() {
-        // MT-01: RealmSwift linked via SPM — does not open a Realm file.
+        // MT-04: schema + migration version before first file open.
+        RealmBootstrap.configureDefault()
+        // MT-01: RealmSwift linked — default configuration file URL (opens storage lazily on first Realm()).
         _ = Realm.Configuration.defaultConfiguration.fileURL
         // MT-02: Alamofire linked via SPM — hold default session so the dependency is exercised.
         _ = Session.default
