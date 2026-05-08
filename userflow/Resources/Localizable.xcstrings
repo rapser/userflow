@@ -256,6 +256,57 @@
         }
       }
     },
+    "users.list.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No users match yet. Pull down to refresh or change your search."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay usuarios que coincidan. Desliza hacia abajo para actualizar o ajusta la búsqueda."
+          }
+        }
+      }
+    },
+    "users.list.loadingA11y" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading users"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando usuarios"
+          }
+        }
+      }
+    },
+    "users.list.searchPrompt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name, username, phone, email, city…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre, usuario, teléfono, correo, ciudad…"
+          }
+        }
+      }
+    },
     "users.screenTitle" : {
       "extractionState" : "manual",
       "localizations" : {
