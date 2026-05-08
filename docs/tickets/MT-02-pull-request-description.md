@@ -42,7 +42,7 @@ No introduce lógica de listado, red JSONPlaceholder ni Realm de dominio: eso ll
 | Versión de marketing | `1.0.0` |
 | Build | `2` |
 
-Registro de cambios: **`CHANGELOG.md`** — sección **`[1.0.0]`** (build **2** descrito en el cuerpo).
+Registro de cambios: **`CHANGELOG.md`** → **`## [1.0.0]`**; dentro, bloque **`### Build 2 — MT-02 Foundations`** en la parte superior (sin quitar **`### Build 1 — MT-01`**).
 
 ---
 
