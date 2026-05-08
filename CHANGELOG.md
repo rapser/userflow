@@ -6,7 +6,25 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 4 — MT-04 Realm schemas _(latest entry)_
+### Build 5 — MT-05 Repository merge _(latest entry)_
+
+**Binary build:** `5`
+
+#### Added
+
+- **`UserRepository`** / **`DefaultUserRepository`**: composes **`UsersRemoteServicing`** + Realm; **`refreshRemoteUsers()`** upserts by **`remote-{apiId}`** via **`applyRemoteSnapshot`** (**`isDeleted`** untouched — tombstones survive refetch **MT-11**).
+- **`listUsersForDisplay()`**: excludes **`isDeleted`**, honors **`editedName`** / **`editedEmail`**, sort by **`displayName`** then **`localId`**.
+- **`UserListItem`**: **`Sendable`** list projection for **`MT-07`**.
+- **`UserObject` local convenience init** (**`MT-10`** path): **`apiId == 0`**, UUID **`localId`**, **`createLocalUser(...)`**.
+- **`setEditedName`** / **`setEditedEmail`** for local overrides (**`MT-08`**); **`UserRepositoryError.userNotFound`**.
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`5`** (Debug/Release).
+
+---
+
+### Build 4 — MT-04 Realm schemas
 
 **Binary build:** `4`
 
