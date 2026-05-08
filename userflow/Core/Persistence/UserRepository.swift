@@ -44,30 +44,53 @@ protocol UserRepository: AnyObject {
 final class DefaultUserRepository: UserRepository {
     private let remote: UsersRemoteServicing
 
+    /// Serializa lecturas/escrituras Realm en foreground (`@MainActor`) cuando la UI espera resultado inmediato.
+    /// El merge del **`GET /users`** va por **`RealmRemoteMergeSupport`** (sin **`@MainActor`**) y **no** usa este lock.
+    private let realmLock = NSLock()
+
     init(remote: UsersRemoteServicing) {
         self.remote = remote
     }
 
+    private func withLockedRealm<R>(_ body: (Realm) throws -> R) throws -> R {
+        realmLock.lock()
+        defer { realmLock.unlock() }
+        let realm = try Realm()
+        return try body(realm)
+    }
+
+    private func withLockedRealmWrite<R>(_ body: (Realm) throws -> R) throws -> R {
+        realmLock.lock()
+        defer { realmLock.unlock() }
+        let realm = try Realm()
+        return try realm.write {
+            try body(realm)
+        }
+    }
+
+    private func logged<T>(_ context: String, _ operation: () throws -> T) throws -> T {
+        do {
+            return try operation()
+        } catch {
+            AppDiagnostics.recordHandledError(error, context: context)
+            throw error
+        }
+    }
+
     func listUsersForDisplay() throws -> [UserListItem] {
-        let realm = try openRealm()
-        let live = realm.objects(UserObject.self).where { $0.isDeleted == false }
-        let items = live.map { UserListItem(realmObject: $0) }
-        return items.sorted(by: UserListItem.sortForList)
+        try logged("DefaultUserRepository.listUsersForDisplay") {
+            try withLockedRealm { realm in
+                let live = realm.objects(UserObject.self).where { $0.isDeleted == false }
+                let items = live.map { UserListItem(realmObject: $0) }
+                return items.sorted(by: UserListItem.sortForList)
+            }
+        }
     }
 
     func refreshRemoteUsers() async throws {
         let dtos = try await remote.fetchUsers()
-        let realm = try openRealm()
-        try realm.write {
-            for dto in dtos {
-                let pk = UserObject.primaryKey(for: dto)
-                if let existing = realm.object(ofType: UserObject.self, forPrimaryKey: pk) {
-                    existing.applyRemoteSnapshot(localId: pk, dto: dto)
-                } else {
-                    realm.add(UserObject(localId: pk, remote: dto))
-                }
-            }
-        }
+        let configuration = Realm.Configuration.defaultConfiguration
+        try await RealmRemoteMergeSupport.mergeUsersFromRemotePayload(dtos: dtos, configuration: configuration)
     }
 
     func createLocalUser(name: String, username: String, email: String, phone: String, city: String) throws -> UserListItem {
@@ -78,18 +101,19 @@ final class DefaultUserRepository: UserRepository {
         let emailStored = try UserFormValidators.trimmedOptionalEmail(email).validatedOrThrow() ?? ""
         let phoneStored = try UserFormValidators.trimmedOptionalPhone(phone).validatedOrThrow() ?? ""
 
-        let realm = try openRealm()
-        let row = UserObject(
-            localOnlyName: nameTrimmed,
-            username: usernameTrimmed,
-            email: emailStored,
-            phone: phoneStored,
-            city: cityTrimmed
-        )
-        try realm.write {
-            realm.add(row)
+        return try logged("DefaultUserRepository.createLocalUser.realmWrite") {
+            try withLockedRealmWrite { realm in
+                let row = UserObject(
+                    localOnlyName: nameTrimmed,
+                    username: usernameTrimmed,
+                    email: emailStored,
+                    phone: phoneStored,
+                    city: cityTrimmed
+                )
+                realm.add(row)
+                return UserListItem(realmObject: row)
+            }
         }
-        return UserListItem(realmObject: row)
     }
 
     func setEditedName(localId: String, value: String?) throws {
@@ -101,49 +125,69 @@ final class DefaultUserRepository: UserRepository {
     }
 
     func setLocalDisplayEdits(localId: String, editedName: String?, editedEmail: String?) throws {
-        let realm = try openRealm()
-        guard let user = realm.object(ofType: UserObject.self, forPrimaryKey: localId) else {
-            throw UserRepositoryError.userNotFound(localId: localId)
-        }
-        try realm.write {
-            user.editedName = Self.normalizeEdit(editedName)
-            user.editedEmail = Self.normalizeEdit(editedEmail)
-        }
-    }
-
-    func userDetailSnapshot(localId: String) throws -> UserDetailSnapshot {
-        let realm = try openRealm()
-        guard let obj = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !obj.isDeleted else {
-            throw UserRepositoryError.userNotFound(localId: localId)
-        }
-        return UserDetailSnapshot(realmObject: obj)
-    }
-
-    func deleteUser(localId: String) async throws {
-        let realm = try openRealm()
-        guard let row = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !row.isDeleted else {
-            throw UserRepositoryError.userNotFound(localId: localId)
-        }
-
-        let remoteId = row.apiId
-        if remoteId > 0 {
-            try await remote.deleteUser(id: remoteId)
-        }
-
-        try realm.write {
-            if let inner = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !inner.isDeleted {
-                inner.isDeleted = true
+        _ = try logged("DefaultUserRepository.setLocalDisplayEdits") {
+            try withLockedRealmWrite { realm in
+                guard let user = realm.object(ofType: UserObject.self, forPrimaryKey: localId) else {
+                    throw UserRepositoryError.userNotFound(localId: localId)
+                }
+                user.editedName = Self.normalizeEdit(editedName)
+                user.editedEmail = Self.normalizeEdit(editedEmail)
+                return ()
             }
         }
     }
 
-    private func setOptionalEdit(localId: String, apply: (UserObject) -> Void) throws {
-        let realm = try openRealm()
-        guard let user = realm.object(ofType: UserObject.self, forPrimaryKey: localId) else {
-            throw UserRepositoryError.userNotFound(localId: localId)
+    func userDetailSnapshot(localId: String) throws -> UserDetailSnapshot {
+        try logged("DefaultUserRepository.userDetailSnapshot") {
+            try withLockedRealm { realm in
+                guard let obj = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !obj.isDeleted else {
+                    throw UserRepositoryError.userNotFound(localId: localId)
+                }
+                return UserDetailSnapshot(realmObject: obj)
+            }
         }
-        try realm.write {
-            apply(user)
+    }
+
+    func deleteUser(localId: String) async throws {
+        let remoteId: Int = try logged("DefaultUserRepository.deleteUser.readMeta") {
+            try withLockedRealm { realm in
+                guard let row = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !row.isDeleted else {
+                    throw UserRepositoryError.userNotFound(localId: localId)
+                }
+                return row.apiId
+            }
+        }
+
+        if remoteId > 0 {
+            do {
+                try await remote.deleteUser(id: remoteId)
+            } catch {
+                AppDiagnostics.recordHandledError(error, context: "DefaultUserRepository.deleteUser.remoteDELETE")
+                throw error
+            }
+        }
+
+        do {
+            try withLockedRealmWrite { realm in
+                if let inner = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !inner.isDeleted {
+                    inner.isDeleted = true
+                }
+            }
+        } catch {
+            AppDiagnostics.recordHandledError(error, context: "DefaultUserRepository.deleteUser.tombstone")
+            throw error
+        }
+    }
+
+    private func setOptionalEdit(localId: String, apply: (UserObject) -> Void) throws {
+        _ = try logged("DefaultUserRepository.setOptionalEdit") {
+            try withLockedRealmWrite { realm in
+                guard let user = realm.object(ofType: UserObject.self, forPrimaryKey: localId) else {
+                    throw UserRepositoryError.userNotFound(localId: localId)
+                }
+                apply(user)
+                return ()
+            }
         }
     }
 
@@ -153,7 +197,4 @@ final class DefaultUserRepository: UserRepository {
         return trimmed.isEmpty ? nil : trimmed
     }
 
-    private func openRealm() throws -> Realm {
-        try Realm()
-    }
 }

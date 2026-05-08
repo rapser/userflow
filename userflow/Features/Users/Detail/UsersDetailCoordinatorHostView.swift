@@ -29,6 +29,11 @@ struct UsersDetailCoordinatorHostView: View {
                 Spacer(minLength: 0)
             } else if let snapshot = viewModel.snapshot {
                 detailScrollContent(snapshot: snapshot)
+            } else {
+                Spacer(minLength: 0)
+                ProgressView()
+                    .progressViewStyle(.circular)
+                Spacer(minLength: 0)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -57,7 +62,8 @@ struct UsersDetailCoordinatorHostView: View {
                         viewModel.saveEdits()
                     } label: {
                         Text(String(localized: String.LocalizationValue("users.detail.save")))
-                            .font(.body.weight(.semibold))
+                            .font(.body)
+                            .fontWeight(.semibold)
                     }
                     .disabled(viewModel.isDeletingUser)
                 } else {
@@ -71,7 +77,9 @@ struct UsersDetailCoordinatorHostView: View {
         .alert(String(localized: String.LocalizationValue("users.detail.deleteAlertTitle")), isPresented: $showDeleteConfirmation) {
             Button(String(localized: String.LocalizationValue("button.cancel")), role: .cancel) {}
             Button(String(localized: String.LocalizationValue("users.detail.delete")), role: .destructive) {
-                Task { await viewModel.deleteUserConfirmed() }
+                AppForegroundTask.scheduleSafe("UsersDetailCoordinatorHostView.deleteConfirmed") {
+                    await viewModel.deleteUserConfirmed()
+                }
             }
         } message: {
             Text(String(localized: String.LocalizationValue("users.detail.deleteAlertMessage")))
@@ -152,7 +160,7 @@ struct UsersDetailCoordinatorHostView: View {
                             Text(snapshot.formattedAddressLines).frame(maxWidth: .infinity, alignment: .leading)
                         }
                         if !snapshot.geoLine.isEmpty {
-                            Label(snapshot.geoLine, systemImage: "mappin.and.ellipse")
+                            Label(snapshot.geoLine, systemImage: "mappin.circle")
                                 .foregroundColor(.secondary)
                                 .padding(.top, snapshot.formattedAddressLines.isEmpty ? 0 : 6)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -196,7 +204,8 @@ struct UsersDetailCoordinatorHostView: View {
                     .multilineTextAlignment(.center)
             } else {
                 Text(snapshot.displayName)
-                    .font(.title2.bold())
+                    .font(.title2)
+                    .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                 Text(snapshot.username.isEmpty ? "—" : "@\(snapshot.username)")
                     .font(.subheadline)
@@ -260,7 +269,8 @@ struct UsersDetailCoordinatorHostView: View {
     private func groupedCard(titleKey: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(String(localized: String.LocalizationValue(titleKey)))
-                .font(.subheadline.weight(.semibold))
+                .font(.subheadline)
+                .fontWeight(.semibold)
                 .foregroundColor(.secondary)
             VStack(alignment: .leading, spacing: 10) {
                 content()
@@ -305,7 +315,7 @@ private struct LabeledMiniRow: View {
                 .foregroundColor(.secondary)
             if let monospaceLine {
                 Text(monospaceLine)
-                    .font(.footnote.monospaced())
+                    .font(.system(.footnote, design: .monospaced))
             } else if let valueLine {
                 Text(valueLine)
                     .font(.body)

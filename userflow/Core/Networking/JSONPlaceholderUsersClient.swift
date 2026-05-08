@@ -25,6 +25,7 @@ final class JSONPlaceholderUsersClient: UsersRemoteServicing {
                 .serializingDecodable([UserDTO].self, decoder: decoder)
                 .value
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "JSONPlaceholderUsersClient.fetchUsers")
             throw Self.mapFetchError(error)
         }
     }
@@ -36,6 +37,7 @@ final class JSONPlaceholderUsersClient: UsersRemoteServicing {
                 .serializingData()
                 .value
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "JSONPlaceholderUsersClient.deleteUser(\(id))")
             throw Self.mapDeleteError(error)
         }
     }

@@ -108,6 +108,7 @@ extension CreationLocationController: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        AppDiagnostics.recordHandledError(error, context: "CreationLocationController.didFailWithError")
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             isLocating = false

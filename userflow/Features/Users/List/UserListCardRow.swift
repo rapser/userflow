@@ -17,7 +17,7 @@ struct UserListCardRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: "person.crop.circle.fill")
-                .font(.system(size: 46))
+                .font(.system(size: UIFontMetrics.default.scaledValue(for: 46)))
                 .foregroundColor(Color(UIColor.tertiaryLabel))
                 .accessibilityHidden(true)
 

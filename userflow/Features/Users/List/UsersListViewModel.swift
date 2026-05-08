@@ -11,7 +11,12 @@ final class UsersListViewModel: ObservableObject {
     private let repository: UserRepository
 
     @Published private(set) var rows: [UserListItem] = []
-    @Published var searchText: String = ""
+    @Published var searchText: String = "" {
+        didSet { recomputeFilteredRows() }
+    }
+
+    /// Derivado de **`rows`** + **`searchText`**; evita re-filtrar en cada evaluación del **`body`** al desplazar.
+    @Published private(set) var filteredRows: [UserListItem] = []
 
     /// Shown while first load or full refresh is in flight before any rows exist.
     @Published private(set) var isLoading: Bool = false
@@ -22,15 +27,21 @@ final class UsersListViewModel: ObservableObject {
     /// Hard failure reading Realm for the list projection.
     @Published private(set) var cacheErrorMessage: String?
 
+    private var didRunInitialRefresh = false
+
     init(repository: UserRepository) {
         self.repository = repository
+        recomputeFilteredRows()
     }
 
-    var filteredRows: [UserListItem] {
+    private func recomputeFilteredRows() {
         let q = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !q.isEmpty else { return rows }
+        if q.isEmpty {
+            filteredRows = rows
+            return
+        }
 
-        return rows.filter { item in
+        filteredRows = rows.filter { item in
             item.displayName.localizedCaseInsensitiveContains(q)
                 || item.username.localizedCaseInsensitiveContains(q)
                 || item.phone.localizedCaseInsensitiveContains(q)
@@ -40,6 +51,9 @@ final class UsersListViewModel: ObservableObject {
     }
 
     func loadInitial() async {
+        guard !didRunInitialRefresh else { return }
+        didRunInitialRefresh = true
+        reloadFromCacheSynchronously()
         await refreshUsers()
     }
 
@@ -51,8 +65,10 @@ final class UsersListViewModel: ObservableObject {
         do {
             try await repository.refreshRemoteUsers()
         } catch let error as NetworkingError {
+            AppDiagnostics.recordHandledError(error, context: "UsersListViewModel.refreshUsers")
             refreshWarning = error.asAppError().userFacingMessage
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "UsersListViewModel.refreshUsers.unexpected")
             refreshWarning = AppError.unknown.userFacingMessage
         }
 
@@ -69,8 +85,10 @@ final class UsersListViewModel: ObservableObject {
             rows = try repository.listUsersForDisplay()
             cacheErrorMessage = nil
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "UsersListViewModel.reloadFromCacheSynchronously(listUsersForDisplay)")
             rows = []
             cacheErrorMessage = AppError.unknown.userFacingMessage
         }
+        recomputeFilteredRows()
     }
 }

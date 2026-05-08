@@ -66,7 +66,7 @@ En **Xcode**, el desarrollador incorpora **antes** de iniciar el trabajo de tick
 
 ## Artefactos de documentación
 
-- **[README](../README.md)** (raíz): intro, arquitectura (MVVM+C), configuración SPM (Realm + Alamofire), localización, permisos de ubicación, estrategia de caché/merge/delete lógico, decisiones (async/await, Core Location When In Use), cómo ejecutar.
+- **[README](../README.md)** (raíz): documentación consolidada (**MT-13**) — alcance obligatorio ↔ implementación, arquitectura (MVVM+C), SPM/ejecución, merge **`isDeleted`**, validación (**MT-09**), ubicación (**MT-12 When In Use**), `CHANGELOG`/versión y enlaces Git.
 - **Este archivo** [`docs/development-plan.md`](./development-plan.md): tabla Jira/interna, dependencias y DoD por ticket para el equipo.
 
 ## Dependencias entre bloques
@@ -154,6 +154,8 @@ Pasos recomendados al obtener lista para UI (o tras refresh):
 3. **Construir modelo de vista** por unión Realm: orden por nombre o por `apiId`; **excluir** todos con `isDeleted == true`; aplicar `_displayName` / `_displayEmail` si persisten edits locales sobre `name` / `email` del DTO persistido.
 
 Documentar estos pasos textualmente en README vía **MT-13**.
+
+**Estado (MT-13):** la política aplicada en código y cómo se refleja en la UI está descrita en **[README.md](../README.md)** (secciones **Política de merge y pantalla lista** y **Estado del alcance obligatorio**).
 
 ---
 
