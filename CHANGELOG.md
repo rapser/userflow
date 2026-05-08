@@ -6,7 +6,24 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 6 — MT-06 Coordinators _(latest entry)_
+### Build 7 — MT-07 User list _(latest entry)_
+
+**Binary build:** `7`
+
+#### Added
+
+- **`UsersListViewModel`**: `refreshRemoteUsers()` + **`listUsersForDisplay()`**, `.searchable` filtration, aviso si falla red con caché (**`MT-05`**), **`reloadFromCache`** tras cerrar sheet de alta.
+- **`UserListCardRow`**: tarjeta agrupada (nombre, username/ciudad, teléfono/email, avatar SF Symbol por defecto).
+- **`UsersListCoordinatorHostView`**: fondo **`secondarySystemGroupedBackground`**, tarjetas blancas redondeadas, **`NavigationLink(tag:selection:)`** (**iOS 15**) → **`UsersDetailCoordinatorHostView`**, **`refreshable`**, **`ProgressView`** inicial / leading en refresco con datos.
+- **`Localizable`**: `users.list.empty`, **`users.list.searchPrompt`**, **`users.list.loadingA11y`** (ES/EN).
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`7`** (Debug/Release).
+
+---
+
+### Build 6 — MT-06 Coordinators
 
 **Binary build:** `6`
 
