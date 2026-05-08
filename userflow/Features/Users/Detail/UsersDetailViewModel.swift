@@ -10,6 +10,7 @@ import Foundation
 final class UsersDetailViewModel: ObservableObject {
     private let localId: String
     private let repository: UserRepository
+    private let onDeleteSuccess: () -> Void
 
     @Published private(set) var snapshot: UserDetailSnapshot?
     @Published private(set) var loadFailedMessage: String?
@@ -21,9 +22,13 @@ final class UsersDetailViewModel: ObservableObject {
     /// Save failed (shows inline banner).
     @Published private(set) var saveErrorMessage: String?
 
-    init(localId: String, repository: UserRepository) {
+    @Published private(set) var deleteErrorMessage: String?
+    @Published private(set) var isDeletingUser: Bool = false
+
+    init(localId: String, repository: UserRepository, onDeleteSuccess: @escaping () -> Void) {
         self.localId = localId
         self.repository = repository
+        self.onDeleteSuccess = onDeleteSuccess
     }
 
     func reload() {
@@ -81,6 +86,28 @@ final class UsersDetailViewModel: ObservableObject {
 
     func clearSaveError() {
         saveErrorMessage = nil
+    }
+
+    func clearDeleteError() {
+        deleteErrorMessage = nil
+    }
+
+    func deleteUserConfirmed() async {
+        guard !isDeletingUser else { return }
+        deleteErrorMessage = nil
+        isDeletingUser = true
+        defer { isDeletingUser = false }
+
+        do {
+            try await repository.deleteUser(localId: localId)
+            onDeleteSuccess()
+        } catch let error as NetworkingError {
+            deleteErrorMessage = error.asAppError().userFacingMessage
+        } catch UserRepositoryError.userNotFound {
+            deleteErrorMessage = String(localized: String.LocalizationValue("users.detail.notFound"))
+        } catch {
+            deleteErrorMessage = AppError.unknown.userFacingMessage
+        }
     }
 
     private func primeDraftsFromSnapshot() {

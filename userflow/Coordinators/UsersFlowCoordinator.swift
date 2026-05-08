@@ -6,7 +6,7 @@
 import Combine
 import SwiftUI
 
-/// Navegación MVVM+C (lista → detalle, alta en sheet); placeholders sustituidos (**`MT-07`** lista, **`MT-08`** detalle, **`MT-10`** alta).
+/// Navegación MVVM+C: lista (**`MT-07`**), detalle (**`MT-08`** / **`MT-11`**), alta (**`MT-10`** sheet).
 @MainActor
 final class UsersFlowCoordinator: ObservableObject, AppCoordinating {
     let repository: UserRepository

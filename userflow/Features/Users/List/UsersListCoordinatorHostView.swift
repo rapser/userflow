@@ -82,7 +82,11 @@ struct UsersListCoordinatorHostView: View {
                         NavigationLink(
                             destination: UsersDetailCoordinatorHostView(
                                 localUserId: item.localId,
-                                repository: coordinator.repository
+                                repository: coordinator.repository,
+                                onDeleted: {
+                                    coordinator.detailLocalId = nil
+                                    Task { await viewModel.reloadFromCache() }
+                                }
                             ),
                             tag: item.localId,
                             selection: $coordinator.detailLocalId
