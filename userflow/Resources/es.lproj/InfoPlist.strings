@@ -1,0 +1,2 @@
+/* Privacidad ubicación — MT-12 (When In Use). */
+NSLocationWhenInUseUsageDescription = "Usamos tu ubicación aproximada una vez al pulsar «Obtener coordenadas» en Usuario nuevo.";

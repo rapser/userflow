@@ -6,9 +6,10 @@
 import SwiftUI
 import UIKit
 
-/// Alta local (**`MT-10`**): formulario **`createLocalUser`** + validadores **`MT-09`**.
+/// Alta local (**`MT-10`**, **`MT-12`** ubicación): formulario **`createLocalUser`** + validadores **`MT-09`** + captura GPS opcional (**When In Use**).
 struct UsersCreateCoordinatorHostView: View {
     @StateObject private var viewModel: UsersCreateViewModel
+    @StateObject private var locationController = CreationLocationController()
     @Environment(\.dismiss) private var dismiss
 
     init(repository: UserRepository) {
@@ -33,6 +34,9 @@ struct UsersCreateCoordinatorHostView: View {
                 }
                 .disabled(viewModel.isSaving)
             }
+        }
+        .sheet(item: $locationController.sheetPayload) { capture in
+            coordinatesResultSheet(capture: capture)
         }
     }
 
@@ -82,6 +86,8 @@ struct UsersCreateCoordinatorHostView: View {
                     ]
                 )
 
+                gpsCaptureCard()
+
                 Text(String(localized: String.LocalizationValue("users.create.footerHint")))
                     .font(.footnote)
                     .foregroundColor(.secondary)
@@ -98,6 +104,105 @@ struct UsersCreateCoordinatorHostView: View {
                     .progressViewStyle(.circular)
             }
         }
+    }
+
+    private func gpsCaptureCard() -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(LocalizedStringKey("users.create.section.gps"))
+                .font(.footnote.weight(.semibold))
+                .foregroundColor(.secondary)
+                .padding(.leading, 4)
+                .padding(.bottom, 8)
+
+            VStack(alignment: .leading, spacing: 14) {
+                if let locBanner = locationController.bannerMessage {
+                    HStack(alignment: .top, spacing: 10) {
+                        Text(locBanner)
+                            .font(.footnote)
+                            .foregroundColor(.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Button(String(localized: String.LocalizationValue("button.ok"))) {
+                            locationController.clearBanner()
+                        }
+                        .buttonStyle(.borderless)
+                        .foregroundColor(.accentColor)
+                    }
+                    .padding(12)
+                    .background(Color(uiColor: .secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+
+                Button {
+                    locationController.userRequestedCoordinates()
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "location.circle.fill")
+                            .font(.title3)
+                        Text(String(localized: String.LocalizationValue("users.create.locationButton")))
+                            .font(.body.weight(.medium))
+                        Spacer(minLength: 0)
+                        if locationController.isLocating {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                        }
+                    }
+                    .padding(.vertical, 14)
+                    .padding(.horizontal, 16)
+                }
+                .buttonStyle(.plain)
+                .foregroundColor(locationController.isLocating ? Color.secondary : Color.accentColor)
+                .disabled(viewModel.isSaving || locationController.isLocating)
+                .accessibilityLabel(String(localized: String.LocalizationValue("users.create.locationButtonA11y")))
+
+                Text(String(localized: String.LocalizationValue("location.usageWhenInUse")))
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(uiColor: .systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
+            .padding(.horizontal, 16)
+        }
+    }
+
+    private func coordinatesResultSheet(capture: CreationLocationController.CoordinatesCapture) -> some View {
+        NavigationView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(String(localized: String.LocalizationValue("users.create.locationSheetSubtitle")))
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(String(localized: String.LocalizationValue("users.create.locationLatitudeLabel")))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(capture.latitudeDisplay)
+                        .font(.system(.body, design: .monospaced))
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(String(localized: String.LocalizationValue("users.create.locationLongitudeLabel")))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(capture.longitudeDisplay)
+                        .font(.system(.body, design: .monospaced))
+                }
+                Spacer(minLength: 0)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .navigationTitle(String(localized: String.LocalizationValue("users.create.locationSheetTitle")))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(String(localized: String.LocalizationValue("button.ok"))) {
+                        locationController.dismissSheet()
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 
     private struct FieldSpec {

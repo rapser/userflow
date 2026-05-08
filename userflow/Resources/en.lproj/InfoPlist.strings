@@ -1,0 +1,2 @@
+/* Localized Info.plist keys — MT-12 Core Location (When In Use). */
+NSLocationWhenInUseUsageDescription = "We read your approximate location once when you tap “Get coordinates” on the New user screen.";
