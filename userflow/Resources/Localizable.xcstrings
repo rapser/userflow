@@ -109,13 +109,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We use your location when you tap the button on the creation screen (MT-12)."
+            "value" : "We read your approximate location once when you tap “Get coordinates” on the New user screen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usamos tu ubicación cuando pulsas el botón en la pantalla de creación (MT-12)."
+            "value" : "Usamos tu ubicación aproximada una vez al pulsar «Obtener coordenadas» en la pantalla Usuario nuevo."
           }
         }
       }
@@ -387,9 +387,99 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los campos obligatorios se recortan al guardar. Déja correo o teléfono vacíos si no aplican."
+            "value" : "Los campos obligatorios se recortan al guardar. Deja correo o teléfono vacíos si no aplican."
           }
         }
+      }
+    },
+    "users.create.locationButton" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Get coordinates" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Obtener coordenadas" } }
+      }
+    },
+    "users.create.locationButtonA11y" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Read approximate location once" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Leer ubicación aproximada una vez" } }
+      }
+    },
+    "users.create.locationDenied" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location access is denied. Enable it for User Flow under Settings › Privacy › Location Services."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso a la ubicación denegado. Actívalo para User Flow en Ajustes › Privacidad › Servicios de localización."
+          }
+        }
+      }
+    },
+    "users.create.locationFailedGeneric" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "We couldn’t read your coordinates. Try again in a moment." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No pudimos leer tus coordenadas. Inténtalo de nuevo más tarde." } }
+      }
+    },
+    "users.create.locationLatitudeLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Latitude" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Latitud" } }
+      }
+    },
+    "users.create.locationLongitudeLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Longitude" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Longitud" } }
+      }
+    },
+    "users.create.locationUnavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No coordinate was returned. Enable location for this device or simulator and try again." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No llegó ninguna coordenada. Activa ubicación en el dispositivo o simulador e inténtalo otra vez." } }
+      }
+    },
+    "users.create.locationSheetSubtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-time approximation from Core Location."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aproximación puntual mediante Core Location."
+          }
+        }
+      }
+    },
+    "users.create.locationSheetTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Captured coordinates" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Coordenadas capturadas" } }
+      }
+    },
+    "users.create.section.gps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Approximate position (optional)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Posición aproximada (opcional)" } }
       }
     },
     "users.create.section.address" : {
