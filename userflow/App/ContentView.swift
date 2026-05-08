@@ -8,17 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var usersCoordinator = UsersFlowCoordinator(
+        repository: DefaultUserRepository(remote: JSONPlaceholderUsersClient())
+    )
+
     var body: some View {
-        VStack(spacing: 16) {
-            Text("common.appDisplayName")
-                .font(.title.bold())
-            Text("users.screenTitle")
-                .font(.headline)
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-        }
-        .padding()
+        usersCoordinator.rootView()
     }
 }
 

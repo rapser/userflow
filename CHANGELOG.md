@@ -6,7 +6,27 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 5 — MT-05 Repository merge _(latest entry)_
+### Build 6 — MT-06 Coordinators _(latest entry)_
+
+**Binary build:** `6`
+
+#### Added
+
+- **`UsersFlowCoordinator`** (`ObservableObject`): inyección **`UserRepository`** (**`DefaultUserRepository`** + **`JSONPlaceholderUsersClient`** por defecto en **`ContentView`**); estado de navegación (`detailLocalId`, `isPresentingCreateUser`).
+- **`UsersFlowRootView`**: **`NavigationView`** + **`StackNavigationViewStyle`** (**iOS 15**); toolbar **`+`** para sheet de alta (**`MT-10`**); textos en **String Catalog** ES/EN.
+- **Host placeholders**: **`UsersListCoordinatorHostView`**, **`UsersDetailCoordinatorHostView`**, **`UsersCreateCoordinatorHostView`** (navegación programada con **`NavigationLink(isActive:)`** hacia detalle de ejemplo `remote-1`).
+
+#### Changed
+
+- **`ContentView`**: raíz = **`usersCoordinator.rootView()`** en lugar del placeholder global.
+- **`AppCoordinating`**: doc alineada con **`UsersFlowCoordinator`** (**`MT-06`**).
+- **`Localizable.xcstrings`**: claves `users.coordinator.*`, **`users.create.navigationTitle`**, **`users.detail.navigationTitle`**.
+- Eliminados **`Users*ModuleMarker.swift`** sustituidos por vistas reales de host.
+- **`CURRENT_PROJECT_VERSION`** → **`6`** (Debug/Release).
+
+---
+
+### Build 5 — MT-05 Repository merge
 
 **Binary build:** `5`
 
