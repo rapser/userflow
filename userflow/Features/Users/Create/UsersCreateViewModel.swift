@@ -40,10 +40,13 @@ final class UsersCreateViewModel: ObservableObject {
             )
             onSuccess()
         } catch UserRepositoryError.validationFailed(let reason) {
+            AppDiagnostics.recordHandledFailure(reason.localizedDescription, context: "UsersCreateViewModel.save.validation")
             saveErrorMessage = reason.localizedDescription
-        } catch UserRepositoryError.userNotFound {
+        } catch UserRepositoryError.userNotFound(let lid) {
+            AppDiagnostics.recordHandledFailure("createLocalUser returned notFound for localId=\(lid) (unexpected)", context: "UsersCreateViewModel.save")
             saveErrorMessage = String(localized: String.LocalizationValue("users.detail.notFound"))
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "UsersCreateViewModel.save.unexpected")
             saveErrorMessage = AppError.unknown.userFacingMessage
         }
     }

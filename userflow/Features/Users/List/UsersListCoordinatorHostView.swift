@@ -6,7 +6,7 @@
 import SwiftUI
 import UIKit
 
-/// Lista principal (**`GET /users`** + merge Realm via **`UsersListViewModel`**). Detalle (**`MT-08`**) navega por **`NavigationLink(tag:selection:)`** (**iOS 15**).
+/// Lista principal (**`GET /users`** + merge Realm via **`UsersListViewModel`**). Detalle (**`MT-08`**): **`NavigationLink(isActive:)`** + **`coordinator.detailLocalId`** (**iOS 15**, evita inestabilidad de **`tag/selection`** con **`LazyVStack`**).
 struct UsersListCoordinatorHostView: View {
     @ObservedObject var coordinator: UsersFlowCoordinator
     @StateObject private var viewModel: UsersListViewModel
@@ -28,22 +28,35 @@ struct UsersListCoordinatorHostView: View {
         .searchable(text: $viewModel.searchText, prompt: Text(String(localized: String.LocalizationValue("users.list.searchPrompt"))))
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                if viewModel.isLoading, !viewModel.rows.isEmpty {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .accessibilityLabel(String(localized: String.LocalizationValue("users.list.loadingA11y")))
-                }
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .accessibilityLabel(String(localized: String.LocalizationValue("users.list.loadingA11y")))
+                    .opacity(viewModel.isLoading && !viewModel.rows.isEmpty ? 1 : 0)
+                    .accessibilityHidden(!(viewModel.isLoading && !viewModel.rows.isEmpty))
             }
         }
         .task {
-            await viewModel.loadInitial()
+            await AppForegroundTask.executeSafe("UsersListCoordinatorHostView.task.loadInitial") {
+                await viewModel.loadInitial()
+            }
         }
         .refreshable {
-            await viewModel.refreshUsers()
+            await AppForegroundTask.executeSafe("UsersListCoordinatorHostView.refreshable") {
+                await viewModel.refreshUsers()
+            }
         }
         .onChange(of: coordinator.isPresentingCreateUser) { presenting in
             if !presenting {
-                Task { await viewModel.reloadFromCache() }
+                AppForegroundTask.scheduleSafe("UsersListCoordinatorHostView.onChangeCreateDismissed") {
+                    await viewModel.reloadFromCache()
+                }
+            }
+        }
+        .onChange(of: coordinator.detailLocalId) { detailId in
+            if detailId == nil {
+                AppForegroundTask.scheduleSafe("UsersListCoordinatorHostView.onChangeDetailDismissed") {
+                    await viewModel.reloadFromCache()
+                }
             }
         }
     }
@@ -85,18 +98,31 @@ struct UsersListCoordinatorHostView: View {
                                 repository: coordinator.repository,
                                 onDeleted: {
                                     coordinator.detailLocalId = nil
-                                    Task { await viewModel.reloadFromCache() }
+                                    AppForegroundTask.scheduleSafe("UsersListCoordinatorHostView.detailOnDeletedReload") {
+                                    await viewModel.reloadFromCache()
+                                }
                                 }
                             ),
-                            tag: item.localId,
-                            selection: $coordinator.detailLocalId
+                            isActive: Binding(
+                                get: { coordinator.detailLocalId == item.localId },
+                                set: { isShowing in
+                                    if isShowing {
+                                        coordinator.detailLocalId = item.localId
+                                    } else if coordinator.detailLocalId == item.localId {
+                                        coordinator.detailLocalId = nil
+                                    }
+                                }
+                            )
                         ) {
                             UserListCardRow(item: item)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(Color(uiColor: .systemBackground))
                                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 2)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(Color(UIColor.separator), lineWidth: 1)
+                        )
                                 .padding(.horizontal, 16)
                         }
                         .buttonStyle(.plain)

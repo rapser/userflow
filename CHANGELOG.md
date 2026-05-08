@@ -8,7 +8,19 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 12 — MT-12 Core Location (When In Use) _(latest entry)_
+### Build 13 — MT-13 README & plan alignment _(latest entry)_
+
+**Binary build:** `13`
+
+#### Changed
+
+- **`README.md`**: documentación de producto/arquitectura, **trazabilidad requisitos obligatorios → código**, merge/borrado lógico, ubicación, i18n, ejecución y versión.
+- **`docs/development-plan.md`**: enlace explícito README ↔ política de merge (**MT-13**).
+- **`CURRENT_PROJECT_VERSION`** → **`13`** (Debug/Release).
+
+---
+
+### Build 12 — MT-12 Core Location (When In Use)
 
 **Binary build:** `12`
 

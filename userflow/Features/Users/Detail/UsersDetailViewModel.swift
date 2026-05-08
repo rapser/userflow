@@ -37,10 +37,12 @@ final class UsersDetailViewModel: ObservableObject {
             snapshot = try repository.userDetailSnapshot(localId: localId)
             loadFailedMessage = nil
             primeDraftsFromSnapshot()
-        } catch UserRepositoryError.userNotFound {
+        } catch UserRepositoryError.userNotFound(let lid) {
+            AppDiagnostics.recordHandledFailure("user not found or deleted — localId=\(lid)", context: "UsersDetailViewModel.reload")
             snapshot = nil
             loadFailedMessage = String(localized: String.LocalizationValue("users.detail.notFound"))
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "UsersDetailViewModel.reload.unexpected")
             snapshot = nil
             loadFailedMessage = AppError.unknown.userFacingMessage
         }
@@ -67,6 +69,7 @@ final class UsersDetailViewModel: ObservableObject {
         let emailSubmission: String?
         switch UserFormValidators.trimmedOptionalEmail(emailDraft) {
         case .failure(let reason):
+            AppDiagnostics.recordHandledFailure(reason.localizedDescription, context: "UsersDetailViewModel.saveEdits.emailValidation")
             saveErrorMessage = reason.localizedDescription
             return
         case .success(let validated):
@@ -77,9 +80,11 @@ final class UsersDetailViewModel: ObservableObject {
             try repository.setLocalDisplayEdits(localId: localId, editedName: nameSubmission, editedEmail: emailSubmission)
             isEditing = false
             reload()
-        } catch UserRepositoryError.userNotFound {
+        } catch UserRepositoryError.userNotFound(let lid) {
+            AppDiagnostics.recordHandledFailure("saveEdits: user missing — localId=\(lid)", context: "UsersDetailViewModel.saveEdits")
             saveErrorMessage = String(localized: String.LocalizationValue("users.detail.notFound"))
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "UsersDetailViewModel.saveEdits.unexpected")
             saveErrorMessage = AppError.unknown.userFacingMessage
         }
     }
@@ -102,10 +107,13 @@ final class UsersDetailViewModel: ObservableObject {
             try await repository.deleteUser(localId: localId)
             onDeleteSuccess()
         } catch let error as NetworkingError {
+            AppDiagnostics.recordHandledError(error, context: "UsersDetailViewModel.deleteUserConfirmed.remote")
             deleteErrorMessage = error.asAppError().userFacingMessage
-        } catch UserRepositoryError.userNotFound {
+        } catch UserRepositoryError.userNotFound(let lid) {
+            AppDiagnostics.recordHandledFailure("delete: user missing — localId=\(lid)", context: "UsersDetailViewModel.deleteUserConfirmed")
             deleteErrorMessage = String(localized: String.LocalizationValue("users.detail.notFound"))
         } catch {
+            AppDiagnostics.recordHandledError(error, context: "UsersDetailViewModel.deleteUserConfirmed.unexpected")
             deleteErrorMessage = AppError.unknown.userFacingMessage
         }
     }

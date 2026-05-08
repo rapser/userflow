@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 extension UserObject {
     /// Preferred primary key for a JSONPlaceholder-backed user.
@@ -21,8 +22,13 @@ extension UserObject {
 
     /// Applies a remote snapshot; intended for **`MT-05` upserts** inside a write transaction.
     /// Does **not** change **`isDeleted`** so a tombstone survives remote re-fetches (**`MT-11`** merge policy).
+    ///
+    /// **Primary key**: only set **`localId`** while the row is **unmanaged** (`realm == nil`).
+    /// After **`realm.add(...)`**, Realm forbids assigning the PK (`Primary key can't be changed after...`).
     func applyRemoteSnapshot(localId: String, dto: UserDTO) {
-        self.localId = localId
+        if realm == nil {
+            self.localId = localId
+        }
         apiId = dto.id
         isLocallyCreated = false
 
