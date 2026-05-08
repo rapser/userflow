@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+._*
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+*.hmap
+
+# Build products
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# SwiftPM — Package.resolved is committed for reproducible resolves
+
+# CocoaPods
+Pods/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+*.xcuserstate
