@@ -10,9 +10,9 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         VStack(spacing: 16) {
-            Text("User Flow")
+            Text("common.appDisplayName")
                 .font(.title.bold())
-            Text("Users")
+            Text("users.screenTitle")
                 .font(.headline)
             Image(systemName: "globe")
                 .imageScale(.large)
