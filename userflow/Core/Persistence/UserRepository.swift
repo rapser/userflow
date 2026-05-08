@@ -26,6 +26,12 @@ protocol UserRepository: AnyObject {
 
     /// `nil` clears the override.
     func setEditedEmail(localId: String, value: String?) throws
+
+    /// **MT-08**: escritura única sobre Realm para nombre/email visual (normaliza trims).
+    func setLocalDisplayEdits(localId: String, editedName: String?, editedEmail: String?) throws
+
+    /// Snapshot persistido (**`MT-08`**): falla si no existe la fila o está **`isDeleted`**.
+    func userDetailSnapshot(localId: String) throws -> UserDetailSnapshot
 }
 
 @MainActor
@@ -73,6 +79,25 @@ final class DefaultUserRepository: UserRepository {
 
     func setEditedEmail(localId: String, value: String?) throws {
         try setOptionalEdit(localId: localId) { $0.editedEmail = Self.normalizeEdit(value) }
+    }
+
+    func setLocalDisplayEdits(localId: String, editedName: String?, editedEmail: String?) throws {
+        let realm = try openRealm()
+        guard let user = realm.object(ofType: UserObject.self, forPrimaryKey: localId) else {
+            throw UserRepositoryError.userNotFound(localId: localId)
+        }
+        try realm.write {
+            user.editedName = Self.normalizeEdit(editedName)
+            user.editedEmail = Self.normalizeEdit(editedEmail)
+        }
+    }
+
+    func userDetailSnapshot(localId: String) throws -> UserDetailSnapshot {
+        let realm = try openRealm()
+        guard let obj = realm.object(ofType: UserObject.self, forPrimaryKey: localId), !obj.isDeleted else {
+            throw UserRepositoryError.userNotFound(localId: localId)
+        }
+        return UserDetailSnapshot(realmObject: obj)
     }
 
     private func setOptionalEdit(localId: String, apply: (UserObject) -> Void) throws {

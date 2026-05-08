@@ -256,6 +256,153 @@
         }
       }
     },
+    "users.detail.edit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar" } }
+      }
+    },
+    "users.detail.save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Save" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Guardar" } }
+      }
+    },
+    "users.detail.notFound" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : { "state" : "translated", "value" : "That user isn’t available (deleted or missing)." }
+        },
+        "es" : {
+          "stringUnit" : { "state" : "translated", "value" : "Ese usuario no está disponible (eliminado o no encontrado)." }
+        }
+      }
+    },
+    "users.detail.section.contact" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Contact" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Contacto" } }
+      }
+    },
+    "users.detail.section.address" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Address" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Dirección" } }
+      }
+    },
+    "users.detail.section.company" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Company" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Empresa" } }
+      }
+    },
+    "users.detail.section.identifiers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Identifiers" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Identificadores" } }
+      }
+    },
+    "users.detail.fields.localId" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Local ID" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "ID local" } }
+      }
+    },
+    "users.detail.fields.source" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Source" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Origen" } }
+      }
+    },
+    "users.detail.fields.apiId" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remote user id (API)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "ID remoto (API)" } }
+      }
+    },
+    "users.detail.localOnly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Local only (no API link yet)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo local (sin enlace API aún)" } }
+      }
+    },
+    "users.detail.remoteBacked" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "JSONPlaceholder-backed" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Respaldado por JSONPlaceholder" } }
+      }
+    },
+    "users.detail.editHeroHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Adjust name or email below, then tap Save." } },
+        "es" : {
+          "stringUnit" : { "state" : "translated", "value" : "Ajusta nombre o correo más abajo y pulsa Guardar." }
+        }
+      }
+    },
+    "users.detail.localOverrideBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Showing your local edits (merge keeps these while cached)." } },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrando tu edición local (el merge mantiene esto en caché)."
+          }
+        }
+      }
+    },
+    "users.detail.editSection" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Name & email" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nombre y correo" } }
+      }
+    },
+    "users.detail.field.namePlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Display name" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nombre mostrado" } }
+      }
+    },
+    "users.detail.field.emailPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Email" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Correo electrónico" } }
+      }
+    },
+    "users.detail.editHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear a field entirely to drop the edit and fall back to the synced copy after Save."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deja el campo vacío para quitar la edición y volver al valor sincronizado al guardar."
+          }
+        }
+      }
+    },
     "users.list.empty" : {
       "extractionState" : "manual",
       "localizations" : {

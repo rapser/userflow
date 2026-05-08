@@ -58,6 +58,12 @@ En **Xcode**, el desarrollador incorpora **antes** de iniciar el trabajo de tick
 - Al cerrar ticket: merge hacia **`develop`** antes del siguiente ticket.
 - Orden recomendado de merges: tabla y sección orden operativa más abajo.
 
+### Build binario por ticket (**`CFBundleVersion`**)
+
+- Cada ticket **MT-NN** que se fusiona lleva **un solo** número de build, correlativo dentro de la versión de marketing (no dos tickets distintos con el mismo **`N`**).
+- **Al dar el ticket por completo** (antes del merge a `develop`): añadir en **`CHANGELOG.md`** la sección **`### Build N — MT-NN …`** y actualizar **`CURRENT_PROJECT_VERSION`** en el proyecto Xcode al mismo **`N`** (Debug y Release).
+- Si varias ramas quedaron con el mismo build en paralelo, al integrar tras `develop` hay que **reconciliar**: dejar una secuencia única (p. ej. el último mergeado sube **`N`** y la rama que queda retrabaja changelog + proyecto).
+
 ## Artefactos de documentación
 
 - **[README](../README.md)** (raíz): intro, arquitectura (MVVM+C), configuración SPM (Realm + Alamofire), localización, permisos de ubicación, estrategia de caché/merge/delete lógico, decisiones (async/await, Core Location When In Use), cómo ejecutar.
@@ -283,6 +289,7 @@ Target tests; mocks y merges.
 | Rama | `feature/MT-01-bootstrap-ios15-gitignore` |
 | Commit | `chore(project): add gitignore for Xcode and Swift PM` |
 | PR title | `[MT-01] Add gitignore, set iOS 15 minimum, verify Realm SPM` |
+| Build al cerrar ticket | Un **solo** **`N`** por **MT-NN**: `CHANGELOG.md` **`### Build N`** + proyecto **`CURRENT_PROJECT_VERSION = N`** antes del merge a `develop` |
 
 ---
 

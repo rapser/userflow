@@ -1,12 +1,31 @@
 # Changelog
 
-All notable changes to **userflow** are documented here. Versions follow **Semantic Versioning** (`MAJOR.MINOR.PATCH`). The **build number** increments with each merged ticket (MT-01 → build 1, MT-02 → build 2, etc.) unless the release policy changes. **New builds are appended at the top of their marketing version section** — previous build notes stay.
+All notable changes to **userflow** are documented here. Versions follow **Semantic Versioning** (`MAJOR.MINOR.PATCH`).
+
+**Binary build (`CFBundleVersion` / `CURRENT_PROJECT_VERSION`):** each **closed** **MT-NN** ticket gets **exactly one** build number, in order (MT-01 → `1`, MT-02 → `2`, …). **Set and record it when you complete the ticket**—add the matching **`### Build N — MT-NN …`** block here and bump **`CURRENT_PROJECT_VERSION`** in the Xcode project **before** merging the feature branch to `develop`. Do **not** reuse the same build for two different tickets; if branches diverged, rebase/merge from `develop` and **renumber** so the sequence stays unique. **New builds are appended at the top of their marketing version section** — previous build notes stay.
 
 ## [1.0.0] — 2026-05-07
 
 **Marketing version:** `1.0.0`
 
-### Build 7 — MT-07 User list _(latest entry)_
+### Build 8 — MT-08 User detail _(latest entry)_
+
+**Binary build:** `8`
+
+#### Added
+
+- **`UserDetailSnapshot`** + **`UserRepository.userDetailSnapshot(localId:)`** y **`setLocalDisplayEdits`** (actualización atómica **`editedName`** / **`editedEmail`**).
+- **`UsersDetailViewModel`**: carga, modo edición, guardar (**Realm**), errores y banner.
+- Pantalla detalle agrupada (**`UsersDetailCoordinatorHostView`**): hero avatar SF Symbol, identificadores, contacto (links **tel** / **mailto** / web), dirección, empresa; edición nombre/email con **Guardar / Cancelar**.
+- **Localizable** `users.detail.*` (ES/EN).
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`8`** (Debug/Release).
+
+---
+
+### Build 7 — MT-07 User list
 
 **Binary build:** `7`
 
