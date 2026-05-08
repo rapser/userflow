@@ -8,7 +8,25 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 8 — MT-08 User detail _(latest entry)_
+### Build 9 — MT-09 Reusable user form validators _(latest entry)_
+
+**Binary build:** `9`
+
+#### Added
+
+- **`UserFormValidators`** / **`UserFormValidationFailure`** (**`Core/Validation`**): texto obligatorio (trim), correo y teléfono opcionales con heurística razonable; **`trimmedOptionalContact(email:phone:)`**.
+- **`Result … validatedOrThrow()`** → **`UserRepositoryError.validationFailed(reason:)`** en **`createLocalUser`** (**nombre**, **username**, **ciudad** obligatorios; **email** / **teléfono** opcionales con formato si no están vacíos).
+- **Edición detalle**: validación de correo al guardar (**`UsersDetailViewModel`** → **`trimmedOptionalEmail`**).
+- **Localizable** `validation.empty`, **`validation.emailInvalid`**, **`validation.phoneInvalid`** (ES/EN).
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`9`** (Debug/Release).
+- Eliminado **`ValidationModuleMarker.swift`**; añadido **`UserFormValidators.swift`**.
+
+---
+
+### Build 8 — MT-08 User detail
 
 **Binary build:** `8`
 

@@ -8,6 +8,9 @@ import RealmSwift
 
 enum UserRepositoryError: Error {
     case userNotFound(localId: String)
+
+    /// **`MT-09`**: alta local rechaza campos obligatorios vacíos / formato (**`validation.*`**).
+    case validationFailed(reason: UserFormValidationFailure)
 }
 
 /// Composes JSONPlaceholder + Realm and merge policy from **`docs/development-plan.md`** (**`MT-05`**).
@@ -65,8 +68,21 @@ final class DefaultUserRepository: UserRepository {
     }
 
     func createLocalUser(name: String, username: String, email: String, phone: String, city: String) throws -> UserListItem {
+        let nameTrimmed = try UserFormValidators.trimmedRequiredNonEmpty(name).validatedOrThrow()
+        let usernameTrimmed = try UserFormValidators.trimmedRequiredNonEmpty(username).validatedOrThrow()
+        let cityTrimmed = try UserFormValidators.trimmedRequiredNonEmpty(city).validatedOrThrow()
+
+        let emailStored = try UserFormValidators.trimmedOptionalEmail(email).validatedOrThrow() ?? ""
+        let phoneStored = try UserFormValidators.trimmedOptionalPhone(phone).validatedOrThrow() ?? ""
+
         let realm = try openRealm()
-        let row = UserObject(localOnlyName: name, username: username, email: email, phone: phone, city: city)
+        let row = UserObject(
+            localOnlyName: nameTrimmed,
+            username: usernameTrimmed,
+            email: emailStored,
+            phone: phoneStored,
+            city: cityTrimmed
+        )
         try realm.write {
             realm.add(row)
         }

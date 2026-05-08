@@ -56,10 +56,17 @@ final class UsersDetailViewModel: ObservableObject {
     func saveEdits() {
         saveErrorMessage = nil
         let nameTrim = nameDraft.trimmingCharacters(in: .whitespacesAndNewlines)
-        let emailTrim = emailDraft.trimmingCharacters(in: .whitespacesAndNewlines)
 
         let nameSubmission: String? = nameTrim.isEmpty ? nil : nameTrim
-        let emailSubmission: String? = emailTrim.isEmpty ? nil : emailTrim
+
+        let emailSubmission: String?
+        switch UserFormValidators.trimmedOptionalEmail(emailDraft) {
+        case .failure(let reason):
+            saveErrorMessage = reason.localizedDescription
+            return
+        case .success(let validated):
+            emailSubmission = validated
+        }
 
         do {
             try repository.setLocalDisplayEdits(localId: localId, editedName: nameSubmission, editedEmail: emailSubmission)

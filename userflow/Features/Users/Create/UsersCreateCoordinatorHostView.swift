@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Placeholder de alta — **`MT-10`** + validadores **`MT-09`**.
+/// Placeholder de alta — **`MT-10`** usará **`UserFormValidators`** (**`MT-09`**) igual que **`createLocalUser`**.
 struct UsersCreateCoordinatorHostView: View {
     let repository: UserRepository
 
