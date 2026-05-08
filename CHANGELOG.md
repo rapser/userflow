@@ -8,7 +8,23 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 9 — MT-09 Reusable user form validators _(latest entry)_
+### Build 10 — MT-10 Create user form _(latest entry)_
+
+**Binary build:** `10`
+
+#### Added
+
+- **`UsersCreateViewModel`** + formulario en **`UsersCreateCoordinatorHostView`** (**Realm** vía **`createLocalUser`**; validación **`MT-09`** en repository).
+- Toolbar **Guardar** (iOS 15), banner de error alineado al detalle, agrupación tipo lista sobre **`secondarySystemGroupedBackground`**.
+- **Localizable** `users.create.field.*`, **`users.create.section.*`**, **`users.create.footerHint`** (ES/EN).
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`10`** (Debug/Release).
+
+---
+
+### Build 9 — MT-09 Reusable user form validators
 
 **Binary build:** `9`
 
