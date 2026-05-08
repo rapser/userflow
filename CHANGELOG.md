@@ -8,7 +8,26 @@ All notable changes to **userflow** are documented here. Versions follow **Seman
 
 **Marketing version:** `1.0.0`
 
-### Build 11 — MT-11 Delete user (logical + simulated API) _(latest entry)_
+### Build 12 — MT-12 Core Location (When In Use) _(latest entry)_
+
+**Binary build:** `12`
+
+#### Added
+
+- **`CreationLocationController`**: permiso **When In Use**, **`requestLocation()`** al pulsar botón en **alta**; **sheet** con lat/long monoespaciadas; mensajes de denegado/error.
+- **`UsersCreateCoordinatorHostView`**: bloque **GPS** opcional, hint **`location.usageWhenInUse`**.
+- **`InfoPlist.strings`** `en.lproj` / `es.lproj` para **`NSLocationWhenInUseUsageDescription`** (**`userflow/Resources/`**).
+
+#### Changed
+
+- **`CURRENT_PROJECT_VERSION`** → **`12`** (Debug/Release).
+- **`INFOPLIST_KEY_NSLocationWhenInUseUsageDescription`** descriptivo (**sin** “planned MT-12”).
+- **Localizable**: claves **`users.create.location*`**; **`location.usageWhenInUse`** afilado.
+- Eliminado **`LocationModuleMarker.swift`**.
+
+---
+
+### Build 11 — MT-11 Delete user (logical + simulated API)
 
 **Binary build:** `11`
 
