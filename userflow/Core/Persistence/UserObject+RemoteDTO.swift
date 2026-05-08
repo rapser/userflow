@@ -20,6 +20,7 @@ extension UserObject {
     }
 
     /// Applies a remote snapshot; intended for **`MT-05` upserts** inside a write transaction.
+    /// Does **not** change **`isDeleted`** so a tombstone survives remote re-fetches (**`MT-11`** merge policy).
     func applyRemoteSnapshot(localId: String, dto: UserDTO) {
         self.localId = localId
         apiId = dto.id
