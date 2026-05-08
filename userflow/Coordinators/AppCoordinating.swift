@@ -7,5 +7,5 @@
 
 import Foundation
 
-/// Contract for MVVM+C navigation shell — concrete coordinators land in MT-06.
+/// Contract for MVVM+C navigation shell — ejemplo: **`UsersFlowCoordinator`** (**`MT-06`**).
 protocol AppCoordinating: AnyObject {}
